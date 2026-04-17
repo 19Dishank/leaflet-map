@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, Search, X, MapPin, ClosedCaptionIcon } from 'lucide-react';
 
-export const MapComponent = ({ query, setQuery, searchResult, handleSearch, handleViewLocation }) => {
+const MapComponent = ({ query, setQuery, searchResult, handleSearch, handleViewLocation }) => {
     const [isSearchActive, setIsSearchActive] = useState(false);
 
     useEffect(() => {
@@ -101,3 +101,5 @@ export const MapComponent = ({ query, setQuery, searchResult, handleSearch, hand
         </div>
     );
 };
+
+export default MapComponent
