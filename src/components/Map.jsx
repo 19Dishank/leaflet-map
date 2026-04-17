@@ -6,7 +6,7 @@ import { MapComponent } from "./MapComponent"
 import { SATELLITELAYER, STREETLAYER, WORLDSTREETLAYER } from "../map/layers/baseLayers"
 import { Locate } from "lucide-react"
 import { locateIcon } from "../assets/icons/LocateIcon"
-import { currentLocationIcon } from "../assets/icons/CurrentLocation"
+import { currentLocationIcon } from "../assets/icons/currentLocation"
 import { layerButton } from "./ui/layerButton"
 
 const Map = () => {
