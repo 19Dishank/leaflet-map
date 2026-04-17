@@ -5,7 +5,8 @@ export const MapComponent = ({ query, setQuery, searchResult, handleSearch, hand
     const [isSearchActive, setIsSearchActive] = useState(false);
 
     useEffect(() => {
-        if (searchResult && searchResult.length > 0) {
+        if (searchResult?.length > 0) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setIsSearchActive(true);
         }
     }, [searchResult]);

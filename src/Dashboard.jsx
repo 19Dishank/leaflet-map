@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from './api';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -39,8 +38,8 @@ const Dashboard = () => {
                         console.log(retryResponse);
                         setProfile(retryResponse.data);
                         console.log(retryResponse);
-                    } catch (refreshError) {
-
+                    } catch (error) {
+                        console.log(error)
                         console.error('Refresh failed → logging out');
                         // navigate('/');
                     }

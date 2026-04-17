@@ -3,6 +3,11 @@ import * as L from "leaflet"
 import "leaflet/dist/leaflet.css"
 import axios from "axios"
 import { MapComponent } from "./MapComponent"
+import { SATELLITELAYER, STREETLAYER, WORLDSTREETLAYER } from "../map/layers/baseLayers"
+import { Locate } from "lucide-react"
+import { locateIcon } from "../assets/icons/LocateIcon"
+import { currentLocationIcon } from "../assets/icons/CurrentLocation"
+import { layerButton } from "./ui/layerButton"
 
 const Map = () => {
     const [searchResult, setSearchResult] = useState([])
@@ -58,36 +63,20 @@ const Map = () => {
             map.removeLayer(currentLocationMarkerRef.current)
         }
 
-        // Add current location marker with custom styling
-        const currentLocationIcon = L.divIcon({
-            html: `<div style="background-color: #3b82f6; width: 12px; height: 12px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 2px #3b82f6;"></div>`,
-            iconSize: [18, 18],
-            className: 'current-location-marker'
-        })
-
         const marker = L.marker([lat, lon], {
-            icon: currentLocationIcon
+            icon: L.divIcon({
+                html: currentLocationIcon,
+                iconSize: [18, 18],
+                iconAnchor: [9, 9],
+                className: 'current-location-marker'
+            })
         }).addTo(map)
 
         currentLocationMarkerRef.current = marker
 
         // Initialize tile layers only once when map is first created
         if (!mapRef.current._initializedLayers) {
-            const streetLayer = L.tileLayer(
-                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                { attribution: "&copy; OpenStreetMap contributors" }
-            )
-
-            const satelliteLayer = L.tileLayer(
-                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-                { attribution: "Tiles &copy; Esri" }
-            )
-            const WorldStreetLayer = L.tileLayer(
-                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
-                { attribution: "Tiles &copy; Esri" }
-            )
-
-            streetLayer.addTo(map)
+            STREETLAYER.addTo(map)
             L.control.scale().addTo(map)
             L.control.zoom({ position: "bottomleft" }).addTo(map)
 
@@ -96,39 +85,78 @@ const Map = () => {
                 options: {
                     position: 'bottomright'
                 },
-
                 onAdd: function (map) {
-
                     var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
                     var button = L.DomUtil.create('a', 'custom-button', container);
+                    button.style.display = 'flex';
+                    button.style.alignItems = 'center';
+                    button.style.justifyContent = 'center';
 
-                    button.innerHTML = '📍';
+                    button.innerHTML = locateIcon;
+
                     button.title = 'Fly to Location';
                     button.href = '#';
-
                     L.DomEvent.disableClickPropagation(button);
-
                     L.DomEvent.on(button, 'click', function (e) {
                         L.DomEvent.stop(e);
-
                         map.flyTo([lat, lon], 17);
                     });
-
                     return container;
                 }
             });
             new L.Control.CustomButton().addTo(map);
 
             // layers button
-            L.control.layers(
-                {
-                    Street: streetLayer,
-                    Satellite: satelliteLayer,
-                    WorldStreetLayer,
-                },
-                {},
-                { collapsed: true, position: "bottomright" }
-            ).addTo(map)
+            L.Control.LayerSwitcher = L.Control.extend({
+                options: { position: 'bottomright' },
+
+                onAdd: function (map) {
+                    const container = L.DomUtil.create('div', 'gmap-layer-switcher');
+                    L.DomEvent.disableClickPropagation(container);
+                    L.DomEvent.disableScrollPropagation(container);
+
+                    container.innerHTML = layerButton;
+
+                    const layers = {
+                        street: STREETLAYER,
+                        satellite: SATELLITELAYER,
+                        world: WORLDSTREETLAYER,
+                    };
+
+                    let active = 'street';
+                    map.addLayer(STREETLAYER);
+
+                    const btn = container.querySelector('#ls-toggle-btn');
+                    const panel = container.querySelector('#ls-panel');
+                    const close = container.querySelector('#ls-close');
+
+                    btn.addEventListener('click', () => panel.classList.toggle('ls-open'));
+                    close.addEventListener('click', () => panel.classList.remove('ls-open'));
+
+                    container.querySelectorAll('.ls-option').forEach(opt => {
+                        opt.addEventListener('click', () => {
+                            const name = opt.dataset.layer;
+                            if (name === active) return;
+
+                            map.removeLayer(layers[active]);
+                            map.addLayer(layers[name]);
+
+                            container.querySelector('.ls-option.active').classList.remove('active');
+                            opt.classList.add('active');
+
+                            btn.querySelector('.ls-btn-preview').className = `ls-btn-preview ls-preview-${name}`;
+                            btn.querySelector('.ls-btn-label').textContent =
+                                name === 'street' ? 'Street' : name === 'satellite' ? 'Satellite' : 'World St.';
+
+                            active = name;
+                        });
+                    });
+
+                    return container;
+                }
+            });
+
+            new L.Control.LayerSwitcher().addTo(map);
 
             mapRef.current._initializedLayers = true
 
