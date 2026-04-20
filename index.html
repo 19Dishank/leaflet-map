@@ -4,21 +4,38 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Leaflet CSS & JS -->
-    <link rel="stylesheet" href="https://unpkg.com" />
-    <script src="https://unpkg.com"></script>
 
-    <!-- Leaflet Routing Machine -->
+    <!-- Leaflet CSS (core map styles) -->
     <link
       rel="stylesheet"
-      href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-sA+e2u2l9gCwXkz8X1sC3yRyvE4s46HoPazTA7kGEXA="
+      crossorigin=""
     />
-    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+    <!-- Leaflet JS (core map functionality) -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-o9N1j8Mk1t1bU5lHppZArYhS4x+h0cYf4dwQ3p3p6kA="
+      crossorigin=""
+    ></script>
+
+    <!-- Leaflet Routing Machine CSS (for route UI styling) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css"
+    />
+
+    <!-- Leaflet Routing Machine JS ( adds routing features like directions) -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
 
     <title>Leaflet Map</title>
   </head>
+
   <body>
     <div id="root"></div>
+
+    <!-- React/Vite entry point -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

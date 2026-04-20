@@ -22,7 +22,7 @@ const MapComponent = ({ query, setQuery, searchResult, handleSearch, handleViewL
                         <button
                             onClick={() => {
                                 setIsSearchActive(false);
-                                setQuery('');
+                                // setQuery('');
                             }}
                             className="p-1 text-slate-600 hover:text-slate-900"
                         >

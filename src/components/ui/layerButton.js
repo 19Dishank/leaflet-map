@@ -9,7 +9,7 @@ export const layerButton = `
         <div class="ls-panel-title">Map type</div>
         <div class="ls-options">
 
-          <div class="ls-option " data-layer="street">
+          <div class="ls-option active" data-layer="street">
             <div class="ls-thumb ls-thumb-street">
               <div class="ls-check">
                 <svg viewBox="0 0 10 10" fill="none" width="9" height="9">
@@ -33,7 +33,7 @@ export const layerButton = `
             <span class="ls-name">Satellite</span>
           </div>
 
-          <div class="ls-option active" data-layer="world">
+          <div class="ls-option " data-layer="world">
             <div class="ls-thumb ls-thumb-world">
               <div class="ls-check">
                 <svg viewBox="0 0 10 10" fill="none" width="9" height="9">

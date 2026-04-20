@@ -17,7 +17,7 @@ const INDIA_CENTER = [20.5937, 78.9629]
 const Map = () => {
     const [searchResult, setSearchResult] = useState([])
     const [query, setQuery] = useState("")
-    const [currentLocation, setCurrentLocation] = useState(null) // null = not yet known
+    const [currentLocation, setCurrentLocation] = useState(null)
     const mapRef = useRef(null)
     const markersRef = useRef([])
     const boundaryRef = useRef([])
@@ -25,6 +25,7 @@ const Map = () => {
 
     // --- 1. Get user location once on mount ---
     useEffect(() => {
+        console.log("get location useEffect")
         if (!navigator.geolocation) {
             () => {
                 toast.error("Geolocation is not supported by this browser.", { duration: 3000 })
@@ -32,7 +33,7 @@ const Map = () => {
             return
         }
 
-        navigator.geolocation.getCurrentPosition(
+        navigator.geolocation.watchPosition(
             (position) => {
                 setCurrentLocation({
                     latitude: position.coords.latitude,
@@ -41,16 +42,22 @@ const Map = () => {
             },
             () => {
                 toast.error("Couldn’t get your current location. Please make sure location services are enabled.", { duration: 3000 });
+            },
+            {
+                enableHighAccuracy: true,
+                maximumAge: 0,
+                timeout: 5000,
             }
         )
     }, [])
 
     // --- 2. Initialize map once ---
     useEffect(() => {
+        console.log("Initialize map useEffect")
         const map = L.map("map", { zoomControl: false }).setView(INDIA_CENTER, 5)
         mapRef.current = map
 
-        WORLDSTREETLAYER.addTo(map)
+        STREETLAYER.addTo(map)
         L.control.scale().addTo(map)
         L.control.zoom({ position: "bottomleft" }).addTo(map)
 
@@ -135,12 +142,13 @@ const Map = () => {
             map.remove()
             mapRef.current = null
         }
-    }, []) // empty array = runs once on mount
+    }, [])
 
     // --- 3. Update marker whenever location changes ---
     useEffect(() => {
+        console.log("Update marker whenever location changes useEffect")
         const map = mapRef.current
-        if (!map || !currentLocation) return // skip if map or location isn't ready
+        if (!map || !currentLocation) return
 
         const { latitude: lat, longitude: lon } = currentLocation
 
